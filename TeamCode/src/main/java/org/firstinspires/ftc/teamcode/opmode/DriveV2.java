@@ -21,6 +21,8 @@ public class DriveV2 extends LinearOpMode {
     private Servo claw;
     private Servo launcher;
 
+    private ArmPipeline arm;
+
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -49,6 +51,7 @@ public class DriveV2 extends LinearOpMode {
         BackR = hardwareMap.get(DcMotor.class, "BackR");
         claw = hardwareMap.get(Servo.class, "GateServo");
         launcher = hardwareMap.get(Servo.class, "LauncherServo");
+        arm = new ArmPipeline(this);
 
         FrontR.setDirection(DcMotorSimple.Direction.REVERSE);
         BackR.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -92,6 +95,11 @@ public class DriveV2 extends LinearOpMode {
                 launcher.setPosition(launched);
             }else{
                 launcher.setPosition(docked);
+            }
+
+            //run the arm code
+            if(gamepad2.a) {
+                arm.moveLift();
             }
 
             //update all telemetry. Telemetry is added in its respective blocks
