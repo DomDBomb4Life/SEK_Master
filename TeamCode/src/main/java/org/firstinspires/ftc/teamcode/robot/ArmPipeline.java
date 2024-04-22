@@ -14,9 +14,9 @@ public class ArmPipeline {
 
     private OpMode opmode;
 
-    String[] Location = new String[4];
-
     String startingPoint = "home";
+
+    String state = "raise";
 
     //costructor
     public ArmPipeline(OpMode opmode){
@@ -33,9 +33,32 @@ public class ArmPipeline {
     public void moveLift(){
         //test if the lift is moving
         if(!isMoving()){
-            //test the starting point of the lift
-            if(startingPoint == "home"){
+            if(state == "raise"){
+                //test the starting point of the lift
+                switch(startingPoint){
+                    case "home":
 
+                        break;
+                    case "safety":
+                        break;
+                    case "top":
+                        break;
+                    case "back board":
+                        break;
+                }
+            }else if(state == "lower"){
+                //test the starting point of the lift
+                switch(startingPoint){
+                    case "home":
+
+                        break;
+                    case "safety":
+                        break;
+                    case "top":
+                        break;
+                    case "back board":
+                        break;
+                }
             }
         }
     }
