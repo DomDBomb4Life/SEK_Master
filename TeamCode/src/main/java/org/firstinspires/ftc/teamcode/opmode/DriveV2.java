@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Drive V2")
-public class controllerModeV3<telemetry> extends LinearOpMode {
+public class DriveV2<telemetry> extends LinearOpMode {
     //toggle and state variables
     boolean planeLaunched = false;
 
