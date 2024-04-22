@@ -51,16 +51,22 @@ public class ArmPipeline {
                 //test the starting point of the lift
                 switch(startingPoint){
                     case "home":
-                        arm.setTargetPosition(liftPositions[1]);
-                        startingPoint = "safety";
+                        if(opmode.gamepad2.a) {
+                            arm.setTargetPosition(liftPositions[1]);
+                            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            startingPoint = "safety";
+                        }
                         break;
                     case "safety":
                         liftR.setTargetPosition(liftPositions[3]);
                         liftL.setTargetPosition(liftPositions[3]);
+                        liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         startingPoint = "top";
                         break;
                     case "top":
                         arm.setTargetPosition(liftPositions[2]);
+                        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         wrist.setPosition(wristBackdropPos);
                         break;
                     case "back board":
@@ -75,23 +81,26 @@ public class ArmPipeline {
                         break;
                     case "safety":
                         arm.setTargetPosition(liftPositions[0]);
+                        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         startingPoint = "home";
                         break;
                     case "top":
                         liftR.setTargetPosition(liftPositions[0]);
                         liftL.setTargetPosition(liftPositions[0]);
+                        liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         startingPoint = "safety";
                         break;
                     case "back board":
-                        arm.setTargetPosition(liftPositions[1]);
-                        wrist.setPosition(wristHome);
-                        startingPoint = "top";
+                        if(opmode.gamepad2.a) {
+                            arm.setTargetPosition(liftPositions[1]);
+                            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            wrist.setPosition(wristHome);
+                            startingPoint = "top";
+                        }
                         break;
                 }
             }
-            liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }
 
