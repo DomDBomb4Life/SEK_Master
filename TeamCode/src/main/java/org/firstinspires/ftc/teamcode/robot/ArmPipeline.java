@@ -7,9 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ArmPipeline {
     //my motors
-    private DcMotor liftL;
-    private DcMotor liftR;
-    private DcMotor arm;
+    private DcMotor liftL, liftR,arm;
 
     private Servo wrist;
 

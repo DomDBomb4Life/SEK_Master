@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.robot.*;
 
 @TeleOp(name = "Drive V2")
-public class DriveV2<telemetry> extends LinearOpMode {
+public class DriveV2 extends LinearOpMode {
     //toggle and state variables
     boolean planeLaunched = false;
 
@@ -56,7 +56,7 @@ public class DriveV2<telemetry> extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            // Put run blocks here
+            // Put run blocks here that get looped
 
             //this is all the drive code
             if (gamepad1.right_trigger == 1) {
