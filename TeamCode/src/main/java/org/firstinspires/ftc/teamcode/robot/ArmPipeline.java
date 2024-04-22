@@ -7,19 +7,29 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ArmPipeline {
     //my motors
-    private DcMotor liftL, liftR,arm;
-
+    private DcMotor liftL, liftR, arm;
     private Servo wrist;
-
     private OpMode opmode;
-
-    String startingPoint = "home";
     private final double wristBackdropPos = 0.2699999;
     private final double wristHome = 0.53;
 
-    String state = "raise";
+    private enum StartingPoint {
+        HOME,
+        SAFETY,
+        TOP,
+        BACK_BOARD
+    }
 
-    int[] liftPositions= new int[4];
+    private enum State {
+        
+        RAISE,
+        LOWER
+    }
+
+    private StartingPoint startingPoint = StartingPoint.HOME;
+    private State state = State.RAISE;
+
+    int[] armPositions= new int[4];
 
 
     //costructor
@@ -36,11 +46,11 @@ public class ArmPipeline {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //init the wrist
         wrist = opmode.hardwareMap.get(Servo.class, "Wrist");
-        //init the lift heights
-        liftPositions[0] = 0;
-        liftPositions[1] = 50;
-        liftPositions[2] = -500;
-        liftPositions[3] = 5500;
+        //init the arm heights
+        armPositions[0] = 0;
+        armPositions[1] = 50;
+        armPositions[2] = -500;
+        armPositions[3] = 5500;
 
     }
 
@@ -52,20 +62,20 @@ public class ArmPipeline {
                 switch(startingPoint){
                     case "home":
                         if(opmode.gamepad2.a) {
-                            arm.setTargetPosition(liftPositions[1]);
+                            arm.setTargetPosition(armPositions[1]);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = "safety";
                         }
                         break;
                     case "safety":
-                        liftR.setTargetPosition(liftPositions[3]);
-                        liftL.setTargetPosition(liftPositions[3]);
+                        liftR.setTargetPosition(armPositions[3]);
+                        liftL.setTargetPosition(armPositions[3]);
                         liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         startingPoint = "top";
                         break;
                     case "top":
-                        arm.setTargetPosition(liftPositions[2]);
+                        arm.setTargetPosition(armPositions[2]);
                         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         wrist.setPosition(wristBackdropPos);
                         break;
@@ -80,20 +90,20 @@ public class ArmPipeline {
                         state = "raise";
                         break;
                     case "safety":
-                        arm.setTargetPosition(liftPositions[0]);
+                        arm.setTargetPosition(armPositions[0]);
                         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         startingPoint = "home";
                         break;
                     case "top":
-                        liftR.setTargetPosition(liftPositions[0]);
-                        liftL.setTargetPosition(liftPositions[0]);
+                        liftR.setTargetPosition(armPositions[0]);
+                        liftL.setTargetPosition(armPositions[0]);
                         liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         startingPoint = "safety";
                         break;
                     case "back board":
                         if(opmode.gamepad2.a) {
-                            arm.setTargetPosition(liftPositions[1]);
+                            arm.setTargetPosition(armPositions[1]);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             wrist.setPosition(wristHome);
                             startingPoint = "top";

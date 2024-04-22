@@ -76,7 +76,7 @@ public class DriveV2 extends LinearOpMode {
             }
 
             //run the arm code
-                arm.moveLift();
+            arm.moveLift();
 
             //update all telemetry. Telemetry is added in its respective blocks
             telemetry.update();
