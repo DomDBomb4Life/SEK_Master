@@ -18,9 +18,10 @@ public class DriveV2 extends LinearOpMode {
 
     //servos
     private Claw claw = new Claw(this);
-    private Servo launcher;
 
     private ArmPipeline arm;
+
+    private PlaneLauncher launcher = new PlaneLauncher(this);
 
 
     /**
@@ -39,7 +40,6 @@ public class DriveV2 extends LinearOpMode {
         final double clawClosed = .38;
 
         //this is all hardwaremaps
-        launcher = hardwareMap.get(Servo.class, "LauncherServo");
         arm = new ArmPipeline(this);
 
 
@@ -57,6 +57,7 @@ public class DriveV2 extends LinearOpMode {
             //open and close the claw
             claw.OpenClose();
             //run the airplane launcher
+            launcher.Launch(this);
 
             //run the arm code
             arm.moveLift();

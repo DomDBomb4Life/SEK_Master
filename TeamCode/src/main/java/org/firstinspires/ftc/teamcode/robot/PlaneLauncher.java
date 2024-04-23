@@ -12,13 +12,11 @@ public class PlaneLauncher {
     boolean planeLaunched = false;
     final double launched = .5;
     final double docked = 0;
-    OpMode opMode;
     //constructor for launcher
-    public PlaneLauncher(LinearOpMode opMode){
+    public PlaneLauncher(OpMode opMode){
         launcher = opMode.hardwareMap.get(Servo.class,"LauncherServo");
-        this.opMode = opMode;
     }
-    public void Launch(){
+    public void Launch(OpMode opMode){
         boolean buttonReleased = true;
         if(!opMode.gamepad2.y){
             buttonReleased = true;
