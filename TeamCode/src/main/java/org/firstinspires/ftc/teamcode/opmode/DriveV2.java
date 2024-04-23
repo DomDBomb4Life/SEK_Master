@@ -34,11 +34,6 @@ public class DriveV2 extends LinearOpMode {
         //Create the robot classes
         DriveTrain mecanumWheels = new DriveTrain(this);
 
-
-        //open and closed position of the gate, launcher, etc
-        final double clawOpen = .32;
-        final double clawClosed = .38;
-
         //this is all hardwaremaps
         arm = new ArmPipeline(this);
 

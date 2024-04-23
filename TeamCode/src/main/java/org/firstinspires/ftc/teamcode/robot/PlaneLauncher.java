@@ -6,18 +6,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class PlaneLauncher {
     Servo launcher;
-    double open = 0.5;
-    double closed = 0;
-    double position = closed;
     boolean planeLaunched = false;
     final double launched = .5;
     final double docked = 0;
+    private boolean buttonReleased = true;
     //constructor for launcher
     public PlaneLauncher(OpMode opMode){
         launcher = opMode.hardwareMap.get(Servo.class,"LauncherServo");
     }
     public void Launch(OpMode opMode){
-        boolean buttonReleased = true;
         if(!opMode.gamepad2.y){
             buttonReleased = true;
         }
