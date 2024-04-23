@@ -17,7 +17,7 @@ public class DriveV2 extends LinearOpMode {
     //these are all our motors
 
     //servos
-    private Servo claw;
+    private Claw claw = new Claw(this);
     private Servo launcher;
 
     private ArmPipeline arm;
@@ -37,12 +37,8 @@ public class DriveV2 extends LinearOpMode {
         //open and closed position of the gate, launcher, etc
         final double clawOpen = .32;
         final double clawClosed = .38;
-        final double launched = .5;
-        final double docked = 0;
 
         //this is all hardwaremaps
-
-        claw = hardwareMap.get(Servo.class, "GateServo");
         launcher = hardwareMap.get(Servo.class, "LauncherServo");
         arm = new ArmPipeline(this);
 
@@ -59,21 +55,8 @@ public class DriveV2 extends LinearOpMode {
             //everything that goes after this is for the gamepad 2
 
             //open and close the claw
-            if(gamepad2.b){
-                claw.setPosition(clawOpen);
-            }else{
-                claw.setPosition(clawClosed);
-            }
+            claw.OpenClose();
             //run the airplane launcher
-            if(gamepad2.y){
-                planeLaunched = planeLaunched ? false : true;
-            }
-
-            if(planeLaunched) {
-                launcher.setPosition(launched);
-            }else{
-                launcher.setPosition(docked);
-            }
 
             //run the arm code
             arm.moveLift();

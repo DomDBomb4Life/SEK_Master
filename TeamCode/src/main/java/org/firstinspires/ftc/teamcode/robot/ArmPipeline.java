@@ -31,6 +31,8 @@ public class ArmPipeline {
     private StartingPoint startingPoint = StartingPoint.HOME;
     private State state = State.RAISE;
 
+    private final int maxLift = 5500;
+
     int[] armPositions= new int[4];
 
 
@@ -52,7 +54,6 @@ public class ArmPipeline {
         armPositions[0] = 0;
         armPositions[1] = 50;
         armPositions[2] = -500;
-        armPositions[3] = 5500;
 
     }
 
