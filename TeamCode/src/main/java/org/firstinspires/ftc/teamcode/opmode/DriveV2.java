@@ -35,11 +35,7 @@ public class DriveV2 extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Put run blocks here that get looped
-
             mecanumWheels.drive(this);
-
-
-            //everything that goes after this is for the gamepad 2
 
             //open and close the claw
             claw.OpenClose();

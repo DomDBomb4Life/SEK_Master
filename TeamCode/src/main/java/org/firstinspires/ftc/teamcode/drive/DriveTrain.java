@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class DriveTrain {
     //this declares motors and variables
-    private DcMotor FrontL, FrontR, BackL, BackR;
+    private final DcMotor FrontL, FrontR, BackL, BackR;
     private double speed = .5;
     private double leftStickX, leftStickY, pivot;
     public DriveTrain(LinearOpMode opMode){
