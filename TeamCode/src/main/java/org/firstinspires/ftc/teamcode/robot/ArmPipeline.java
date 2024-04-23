@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import org.firstinspires.ftc.teamcode.robot.ArmPipeline;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -57,62 +59,78 @@ public class ArmPipeline {
     public void moveLift(){
         //test if the lift is moving
         if(!isMoving()){
-            if(state == "raise"){
+            if(state == State.RAISE){
                 //test the starting point of the lift
                 switch(startingPoint){
-                    case "home":
-                        if(opmode.gamepad2.a) {
+                    case HOME:
+                        if(opmode.gamepad2.a && !liftMoving) {
                             arm.setTargetPosition(armPositions[1]);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            startingPoint = "safety";
+                            startingPoint = StartingPoint.SAFETY;
+                            liftMoving = true;
                         }
                         break;
-                    case "safety":
-                        liftR.setTargetPosition(armPositions[3]);
-                        liftL.setTargetPosition(armPositions[3]);
-                        liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        startingPoint = "top";
+                    case SAFETY:
+                        if(!arm.isBusy()) {
+                            liftR.setTargetPosition(armPositions[3]);
+                            liftL.setTargetPosition(armPositions[3]);
+                            liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            startingPoint = StartingPoint.TOP;
+                            liftMoving = true;
+                        }
                         break;
-                    case "top":
-                        arm.setTargetPosition(armPositions[2]);
-                        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        wrist.setPosition(wristBackdropPos);
+                    case TOP:
+                        if(!arm.isBusy()) {
+                            arm.setTargetPosition(armPositions[2]);
+                            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            wrist.setPosition(wristBackdropPos);
+                            liftMoving = true;
+                        }
                         break;
-                    case "back board":
-                        state = "lower";
+                    case BACK_BOARD:
+                        state = State.LOWER;
                         break;
                 }
-            }else if(state == "lower"){
+            }else if(state == State.LOWER){
                 //test the starting point of the lift
                 switch(startingPoint){
-                    case "home":
-                        state = "raise";
+                    case HOME:
+                        state = State.RAISE;
                         break;
-                    case "safety":
-                        arm.setTargetPosition(armPositions[0]);
-                        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        startingPoint = "home";
+                    case SAFETY:
+                        if(!arm.isBusy()) {
+                            arm.setTargetPosition(armPositions[0]);
+                            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            startingPoint = StartingPoint.HOME;
+                            liftMoving = true;
+                        }
                         break;
-                    case "top":
-                        liftR.setTargetPosition(armPositions[0]);
-                        liftL.setTargetPosition(armPositions[0]);
-                        liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        startingPoint = "safety";
+                    case TOP:
+                        if(!liftL.isBusy() && !liftR.isBusy()) {
+                            liftR.setTargetPosition(armPositions[0]);
+                            liftL.setTargetPosition(armPositions[0]);
+                            liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            startingPoint = StartingPoint.SAFETY;
+                            liftMoving = true;
+                        }
                         break;
-                    case "back board":
-                        if(opmode.gamepad2.a) {
+                    case BACK_BOARD:
+                        if(opmode.gamepad2.a && !liftMoving) {
                             arm.setTargetPosition(armPositions[1]);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             wrist.setPosition(wristHome);
-                            startingPoint = "top";
+                            startingPoint = StartingPoint.TOP;
+                            liftMoving = true;
                         }
                         break;
                 }
             }
         }
     }
+
+    private boolean liftMoving = false;
 
     //is busy method
     private boolean isMoving(){
