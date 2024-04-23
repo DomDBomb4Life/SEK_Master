@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import org.firstinspires.ftc.teamcode.robot.ArmPipeline;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,11 +7,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ArmPipeline {
     //my motors
-    private DcMotor liftL, liftR, arm;
-    private Servo wrist;
-    private OpMode opmode;
-    private final double wristBackdropPos = 0.2699999;
-    private final double wristHome = 0.53;
+    final private DcMotor liftL, liftR, arm;
+    final private Servo wrist;
+    final private OpMode opmode;
+    final private double wristBackdropPos = 0.2699999;
+    final private double wristHome = 0.53;
 
     private enum StartingPoint {
         HOME,
