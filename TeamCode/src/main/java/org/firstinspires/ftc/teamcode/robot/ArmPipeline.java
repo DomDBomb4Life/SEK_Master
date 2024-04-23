@@ -64,11 +64,10 @@ public class ArmPipeline {
                 //test the starting point of the lift
                 switch(startingPoint){
                     case HOME:
-                        if(opmode.gamepad2.a && !liftMoving) {
+                        if(opmode.gamepad2.a) {
                             arm.setTargetPosition(armPositions[1]);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.SAFETY;
-                            liftMoving = true;
                         }
                         break;
                     case SAFETY:
