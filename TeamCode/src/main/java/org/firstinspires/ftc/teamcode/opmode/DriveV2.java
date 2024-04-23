@@ -2,23 +2,15 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+
 
 import org.firstinspires.ftc.teamcode.drive.DriveTrain;
 import org.firstinspires.ftc.teamcode.robot.*;
 
 @TeleOp(name = "Drive V2")
 public class DriveV2 extends LinearOpMode {
-    //toggle and state variables
-    boolean planeLaunched = false;
-
-    //these are all our motors
-
-    //servos
+    //Initiating the classes
     private Claw claw = new Claw(this);
-
     private ArmPipeline arm;
 
     private PlaneLauncher launcher = new PlaneLauncher(this);
