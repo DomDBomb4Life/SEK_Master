@@ -63,11 +63,10 @@ public class ArmPipeline {
                 //test the starting point of the lift
                 switch(startingPoint){
                     case HOME:
-                        if(opmode.gamepad2.a && !liftMoving) {
+                        if(opmode.gamepad2.a) {
                             arm.setTargetPosition(safety);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.SAFETY;
-                            liftMoving = true;
                         }
                         break;
                     case SAFETY:
@@ -77,7 +76,6 @@ public class ArmPipeline {
                             liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.TOP;
-                            liftMoving = true;
                         }
                         break;
                     case TOP:
@@ -85,7 +83,6 @@ public class ArmPipeline {
                             arm.setTargetPosition(backBoard);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             wrist.setPosition(wristBackdropPos);
-                            liftMoving = true;
                         }
                         break;
                     case BACK_BOARD:
@@ -103,7 +100,6 @@ public class ArmPipeline {
                             arm.setTargetPosition(home);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.HOME;
-                            liftMoving = true;
                         }
                         break;
                     case TOP:
@@ -113,24 +109,20 @@ public class ArmPipeline {
                             liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.SAFETY;
-                            liftMoving = true;
                         }
                         break;
                     case BACK_BOARD:
-                        if(opmode.gamepad2.a && !liftMoving) {
+                        if(opmode.gamepad2.a) {
                             arm.setTargetPosition(safety);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             wrist.setPosition(wristHome);
                             startingPoint = StartingPoint.TOP;
-                            liftMoving = true;
                         }
                         break;
                 }
             }
         }
     }
-
-    private boolean liftMoving = false;
 
     //is busy method
     private boolean isMoving(){
