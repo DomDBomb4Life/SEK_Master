@@ -21,7 +21,7 @@ public class ArmPipeline {
     }
 
     private enum State {
-        
+
         RAISE,
         LOWER
     }
@@ -47,11 +47,17 @@ public class ArmPipeline {
         liftR = opmode.hardwareMap.get(DcMotor.class, "LiftR");
         liftR.setDirection(DcMotorSimple.Direction.REVERSE);
         arm = opmode.hardwareMap.get(DcMotor.class, "Arm");
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
         liftR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //init the wrist
         wrist = opmode.hardwareMap.get(Servo.class, "Wrist");
+
+        //set powers
+        liftL.setPower(1);
+        liftR.setPower(1);
+        arm.setPower(.75);
     }
 
     public void moveLift(){
@@ -68,20 +74,17 @@ public class ArmPipeline {
                         }
                         break;
                     case SAFETY:
-                        if(!arm.isBusy()) {
                             liftR.setTargetPosition(maxLift);
                             liftL.setTargetPosition(maxLift);
                             liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.TOP;
-                        }
                         break;
                     case TOP:
-                        if(!arm.isBusy()) {
                             arm.setTargetPosition(backBoard);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             wrist.setPosition(wristBackdropPos);
-                        }
+                            startingPoint = StartingPoint.BACK_BOARD;
                         break;
                     case BACK_BOARD:
                         state = State.LOWER;
@@ -94,20 +97,16 @@ public class ArmPipeline {
                         state = State.RAISE;
                         break;
                     case SAFETY:
-                        if(!arm.isBusy()) {
                             arm.setTargetPosition(home);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.HOME;
-                        }
                         break;
                     case TOP:
-                        if(!liftL.isBusy() && !liftR.isBusy()) {
                             liftR.setTargetPosition(home);
                             liftL.setTargetPosition(home);
                             liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             startingPoint = StartingPoint.SAFETY;
-                        }
                         break;
                     case BACK_BOARD:
                         if(opmode.gamepad2.a) {

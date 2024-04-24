@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
     //This is where important variables are
     Servo claw;
     double clawposition;
-    OpMode opMode;
+    LinearOpMode opMode;
     //constructor for claw
-    public Claw(OpMode opMode){
-        claw = opMode.hardwareMap.get(Servo.class,"GateServo");
+    public Claw(LinearOpMode opMode){
         this.opMode = opMode;
+        claw = opMode.hardwareMap.get(Servo.class,"GateServo");
         clawposition = 0;
     }
     //opening and closing claw

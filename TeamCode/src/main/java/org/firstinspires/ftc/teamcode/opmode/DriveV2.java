@@ -10,10 +10,12 @@ import org.firstinspires.ftc.teamcode.robot.*;
 @TeleOp(name = "Drive V2")
 public class DriveV2 extends LinearOpMode {
     //Initiating the classes
-    private Claw claw = new Claw(this);
+    private PlaneLauncher launcher;
+    private Claw claw;
     private ArmPipeline arm;
 
-    private PlaneLauncher launcher = new PlaneLauncher(this);
+    private DriveTrain mecanumWheels;
+
 
 
     /**
@@ -24,10 +26,10 @@ public class DriveV2 extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Create the robot classes
-        DriveTrain mecanumWheels = new DriveTrain(this);
-
-        //this is all hardwaremaps
+        mecanumWheels = new DriveTrain(this);
+        launcher = new PlaneLauncher(this);
         arm = new ArmPipeline(this);
+        claw = new Claw(this);
 
 
         waitForStart();
@@ -53,15 +55,4 @@ public class DriveV2 extends LinearOpMode {
             telemetry.update();
         }
     }
-
-
-        //constraining methods
-        public double constrain(double Var, double Min, double Max){
-            Var = Math.min(Math.max(Var, Min), Max);
-            return Var;
-        }
-        public int constrain(int Var, int Min, int Max){
-            Var = Math.min(Math.max(Var, Min), Max);
-            return Var;
-        }
 }
