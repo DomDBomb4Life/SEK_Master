@@ -12,11 +12,13 @@ public class ControllerModeV3<telemetry> extends LinearOpMode {
     DcMotor BackL;
     DcMotor FrontR;
     DcMotor BackR;
-
-    //Servos
+    DcMotor LiftL;
+    DcMotor LiftR;
+    DcMotor Arm;
+            //servos
     Servo claw;
     Servo launcher;
-
+    Servo wrist;
     //claw positions
     final double clawOpen = .32;
     final double clawClosed = .38;
@@ -38,11 +40,13 @@ public class ControllerModeV3<telemetry> extends LinearOpMode {
         BackL = hardwareMap.get(DcMotor.class, "BackL");
         FrontR = hardwareMap.get(DcMotor.class, "FrontR");
         FrontL = hardwareMap.get(DcMotor.class, "FrontL");
-
+        LiftL = hardwareMap.get(DcMotor.class,"LiftL");
+        LiftR = hardwareMap.get(DcMotor.class,"LiftR");
+        Arm = hardwareMap.get(DcMotor.class,"Arm");
         //servo hardwaremaps
         claw = hardwareMap.get(Servo.class, "GateServo");
         launcher = hardwareMap.get(Servo.class,"LauncherServo");
-
+        wrist = hardwareMap.get(Servo.class,"wrist");
         while (opModeIsActive()) {
             leftStickY = gamepad1.left_stick_y;
             leftStickX = gamepad1.left_stick_x;
