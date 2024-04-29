@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * This class represents the arm pipeline of the robot.
+ */
 public class ArmPipeline {
     //my motors
     final private DcMotor liftL, liftR, arm;
@@ -21,7 +24,6 @@ public class ArmPipeline {
     }
 
     private enum State {
-        
         RAISE,
         LOWER
     }
@@ -30,15 +32,14 @@ public class ArmPipeline {
     private State state = State.RAISE;
 
     private final int maxLift = 5500;
-
     private final int home = 0;
-
     private final int safety = 50;
-
     private final int backBoard = -500;
 
-
-    //costructor
+    /**
+     * Constructor for the ArmPipeline class.
+     * @param opmode The OpMode object.
+     */
     public ArmPipeline(OpMode opmode){
         //init the opmode
         this.opmode = opmode;
@@ -54,13 +55,17 @@ public class ArmPipeline {
         wrist = opmode.hardwareMap.get(Servo.class, "Wrist");
     }
 
+    /**
+     * Moves the lift based on the current state and starting point.
+     */
     public void moveLift(){
-        //test if the lift is moving
+        // Check if the lift is currently moving
         if(!isMoving()){
             if(state == State.RAISE){
-                //test the starting point of the lift
+                // Check the starting point of the lift
                 switch(startingPoint){
                     case HOME:
+                        // Check if gamepad2.a is pressed
                         if(opmode.gamepad2.a) {
                             arm.setTargetPosition(safety);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -68,6 +73,7 @@ public class ArmPipeline {
                         }
                         break;
                     case SAFETY:
+                        // Check if arm is not busy
                         if(!arm.isBusy()) {
                             liftR.setTargetPosition(maxLift);
                             liftL.setTargetPosition(maxLift);
@@ -77,6 +83,7 @@ public class ArmPipeline {
                         }
                         break;
                     case TOP:
+                        // Check if arm is not busy
                         if(!arm.isBusy()) {
                             arm.setTargetPosition(backBoard);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -88,12 +95,13 @@ public class ArmPipeline {
                         break;
                 }
             }else if(state == State.LOWER){
-                //test the starting point of the lift
+                // Check the starting point of the lift
                 switch(startingPoint){
                     case HOME:
                         state = State.RAISE;
                         break;
                     case SAFETY:
+                        // Check if arm is not busy
                         if(!arm.isBusy()) {
                             arm.setTargetPosition(home);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -101,6 +109,7 @@ public class ArmPipeline {
                         }
                         break;
                     case TOP:
+                        // Check if liftL and liftR are not busy
                         if(!liftL.isBusy() && !liftR.isBusy()) {
                             liftR.setTargetPosition(home);
                             liftL.setTargetPosition(home);
@@ -110,6 +119,7 @@ public class ArmPipeline {
                         }
                         break;
                     case BACK_BOARD:
+                        // Check if gamepad2.a is pressed
                         if(opmode.gamepad2.a) {
                             arm.setTargetPosition(safety);
                             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -122,7 +132,10 @@ public class ArmPipeline {
         }
     }
 
-    //is busy method
+    /**
+     * Checks if the lift is currently moving.
+     * @return true if the lift is moving, false otherwise.
+     */
     private boolean isMoving(){
         return liftL.isBusy() || liftR.isBusy() || arm.isBusy();
     }
