@@ -131,7 +131,7 @@ public class ArmPipeline {
             }
         }
     }
-
+    
     /**
      * Checks if the lift is currently moving.
      * @return true if the lift is moving, false otherwise.
