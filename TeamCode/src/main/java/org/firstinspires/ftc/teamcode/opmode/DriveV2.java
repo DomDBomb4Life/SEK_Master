@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.robot.*;
 @TeleOp(name = "Drive V2")
 public class DriveV2 extends LinearOpMode {
     // Initiating the classes
-    private Claw claw = new Claw(this);
+    private Claw claw;
     private ArmPipeline arm;
-    private PlaneLauncher launcher = new PlaneLauncher(this);
+    private PlaneLauncher launcher;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -23,6 +23,8 @@ public class DriveV2 extends LinearOpMode {
     public void runOpMode() {
         // Create the robot classes
         DriveTrain mecanumWheels = new DriveTrain(this);
+        launcher  = new PlaneLauncher(this);
+        claw =  new Claw(this);
 
         // Initialize hardware maps
         arm = new ArmPipeline(this);
@@ -34,10 +36,10 @@ public class DriveV2 extends LinearOpMode {
             mecanumWheels.drive(this);
 
             // Open and close the claw
-            claw.OpenClose();
+            //claw.OpenClose();
 
             // Run the airplane launcher
-            launcher.Launch(this);
+            //launcher.Launch(this);
 
             // Run the arm code
             arm.moveLift();
