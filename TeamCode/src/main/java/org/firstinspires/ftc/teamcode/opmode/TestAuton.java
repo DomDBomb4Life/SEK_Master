@@ -8,10 +8,16 @@ import org.firstinspires.ftc.teamcode.util.pipelines.PixelLocator;
 
 @Autonomous
 public class TestAuton extends LinearOpMode {
-    PixelLocator pipe = new PixelLocator();
-    VisionPipeline eyes = new VisionPipeline(this, pipe);
 
     @Override
     public void runOpMode() {
+        PixelLocator pipe = new PixelLocator();
+        VisionPipeline eyes = new VisionPipeline(this, pipe);
+        //waiting for the start to be pressed
+        waitForStart();
+        //when running
+        while(opModeIsActive()){
+
+        }
     }
 }

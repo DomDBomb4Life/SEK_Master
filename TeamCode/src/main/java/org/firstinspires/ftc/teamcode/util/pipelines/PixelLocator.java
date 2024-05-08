@@ -17,7 +17,7 @@ public class PixelLocator extends OpenCvPipeline {
 
         // Apply a threshold to create a binary image
         Mat binary = new Mat();
-        Imgproc.threshold(gray, binary, 0, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(gray, binary, 230, 255, Imgproc.THRESH_BINARY);
 
         // Invert the binary image
         Core.bitwise_not(binary, binary);

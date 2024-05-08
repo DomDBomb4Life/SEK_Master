@@ -14,9 +14,9 @@ public class VisionPipeline{
 
     public VisionPipeline(OpMode opMode, OpenCvPipeline pipeline){
         //create the camera instance with live view
-        WebcamName webname = opMode.hardwareMap.get(WebcamName.class, "webcam");
+        WebcamName webname = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        int cameraViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraViewId", "id", opMode.hardwareMap.appContext.getPackageName());
+        int cameraViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webname, cameraViewId);
 
         //activate the camera
