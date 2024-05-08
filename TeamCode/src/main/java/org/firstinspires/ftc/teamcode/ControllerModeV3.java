@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Drive")
@@ -18,7 +19,7 @@ public class ControllerModeV3<telemetry> extends LinearOpMode {
             //servos
     Servo claw;
     Servo launcher;
-    Servo wrist;
+    Servo Wrist;
     //claw positions
     final double clawOpen = .32;
     final double clawClosed = .38;
@@ -46,7 +47,10 @@ public class ControllerModeV3<telemetry> extends LinearOpMode {
         //servo hardwaremaps
         claw = hardwareMap.get(Servo.class, "GateServo");
         launcher = hardwareMap.get(Servo.class,"LauncherServo");
-        wrist = hardwareMap.get(Servo.class,"wrist");
+        Wrist = hardwareMap.get(Servo.class,"Wrist");
+
+        waitForStart();
+
         while (opModeIsActive()) {
             leftStickY = gamepad1.left_stick_y;
             leftStickX = gamepad1.left_stick_x;
@@ -66,7 +70,8 @@ public class ControllerModeV3<telemetry> extends LinearOpMode {
             BackR.setPower((-pivot+leftStickY+leftStickX)*speed);
             FrontL.setPower((pivot+leftStickY+leftStickX)*speed);
             BackL.setPower((pivot+(leftStickY-leftStickX))*speed);
-
+            FrontR.setDirection(DcMotorSimple.Direction.REVERSE);
+            BackR.setDirection(DcMotorSimple.Direction.REVERSE);
             // code for the claw
             if(gamepad2.b){
                 claw.setPosition(clawOpen);
@@ -84,7 +89,9 @@ public class ControllerModeV3<telemetry> extends LinearOpMode {
                     launcher.setPosition(dockedpos);
                 }
             }
-
+//            if(gamepad2.a){
+//                if()
+//            }
 
         }
     }
