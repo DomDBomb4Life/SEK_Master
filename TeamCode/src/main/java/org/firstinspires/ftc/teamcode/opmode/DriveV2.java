@@ -36,10 +36,10 @@ public class DriveV2 extends LinearOpMode {
             mecanumWheels.drive(this);
 
             // Open and close the claw
-            //claw.OpenClose();
+            claw.OpenClose();
 
             // Run the airplane launcher
-            //launcher.Launch(this);
+            launcher.Launch(this);
 
             // Run the arm code
             arm.moveLift();

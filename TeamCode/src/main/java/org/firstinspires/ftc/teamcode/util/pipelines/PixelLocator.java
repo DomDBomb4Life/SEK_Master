@@ -7,12 +7,14 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class PixelLocator extends OpenCvPipeline {
     //put your variables here to use later
-
+    Mat gray;
+    final int camX = 1280;
+    final int camY = 720;
     @Override// this is the method that tells the pipeline what to do with an image
     public Mat processFrame(Mat input) {
         //apply a filter to the image to make it so all of the white image pixels are represented as 1s in a binary image.
         // Convert the image to grayscale
-        Mat gray = new Mat();
+        gray = new Mat();
         Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
 
         // Apply a threshold to create a binary image
@@ -25,5 +27,12 @@ public class PixelLocator extends OpenCvPipeline {
         // Set the result as the processed frame
         input = binary;
         return input;
+    }
+
+    public int getPixelLocation(){
+
+
+
+        return 2;
     }
 }
