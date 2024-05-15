@@ -30,9 +30,7 @@ public class PixelLocator extends OpenCvPipeline {
     }
 
     public int getPixelLocation(){
-
-
-
+Imgproc.findContours();
         return 2;
     }
 }
