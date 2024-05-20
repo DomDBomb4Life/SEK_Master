@@ -2,10 +2,16 @@ package org.firstinspires.ftc.teamcode.util.pipelines;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.opencv.core.Rect;
 
@@ -53,13 +59,13 @@ public class PixelLocator extends OpenCvPipeline {
             // ...
         }
 
-       
+       return 2;
     }
 
 
-    public double determinePixelDensity(Mat input){
-        minDensity = 0;
-        maxDensity = 100;
+    public boolean determinePixelDensity(Mat input){
+        int minDensity = 0;
+        int maxDensity = 100;
         // Find contours in the binary image
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(binary, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
@@ -75,12 +81,12 @@ public class PixelLocator extends OpenCvPipeline {
             Rect rect = Imgproc.boundingRect(contour);
             double density = area / (rect.width * rect.height);
             //determine if the density is the correct amount
-            if (density > minDensity && density < maxDensity) {
-                return input;
-            }
-            else{
-                return null;
-            }
+//            if (density > minDensity && density < maxDensity) {
+//                return true;
+//            }
+//            else{
+//                return false;
+//            }
         }
 
         //this method will determine the pixel density of the image
@@ -89,16 +95,16 @@ public class PixelLocator extends OpenCvPipeline {
     }
 
 
-    public double determinePixelDensity(Mat input){
+    /*public double determinePixelDensity(Mat input){
     // Convert the binary image to a set of points
     List<Point> points = new ArrayList<>();
-    for (int y = 0; y < input.rows(); y++) {
-        for (int x = 0; x < input.cols(); x++) {
-            if (input.get(y, x)[0] > 0) {
-                points.add(new Point(x, y));
+        for (int y = 0; y < input.rows(); y++) {
+            for (int x = 0; x < input.cols(); x++) {
+                if (input.get(y, x)[0] > 0) {
+                    points.add(new Point(x, y));
+                }
             }
         }
-    }
 
     // Convert the list of points to a MatOfPoint2f
     MatOfPoint2f pointsMat = new MatOfPoint2f();
@@ -126,7 +132,7 @@ public class PixelLocator extends OpenCvPipeline {
 
     // Return the maximum density
     return Arrays.stream(densities).max().getAsDouble();
-}
+    }*/
 
 
     //this method splits the image into thirds and returns a matrix of the images
