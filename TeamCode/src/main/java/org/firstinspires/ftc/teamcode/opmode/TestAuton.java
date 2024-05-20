@@ -15,11 +15,14 @@ public class TestAuton extends LinearOpMode {
         VisionPipeline eyes = new VisionPipeline(this, pipe);
 
         //variables related to states and encoders
-        int location;
+        int location = pipe.getPixelLocation();
         //waiting for the start to be pressed
+        while (!isStarted()) {
+            telemetry.addData("Location", location);
+            telemetry.update();
+        }
         waitForStart();
 
         //when running
-        location = pipe.getPixelLocation();
     }
 }
