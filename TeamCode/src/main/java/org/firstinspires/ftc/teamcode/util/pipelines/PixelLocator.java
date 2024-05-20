@@ -47,13 +47,42 @@ public class PixelLocator extends OpenCvPipeline {
         Imgproc.threshold(gray, binary, 225, 255, Imgproc.THRESH_BINARY);
 
         // Invert the binary image
-        Core.bitwise_not(binary, binary);
+        // Core.bitwise_not(binary, binary);
         
         // Set the result as the processed frame
         opmode.telemetry.addLine("new frame");
 
         return binary;
     }
+
+    // public Mat processFrame(Mat input) {
+    //     // Convert the input image to grayscale
+    //     Mat gray = new Mat();
+    //     Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
+
+    //     // Apply a Gaussian blur to reduce noise
+    //     Mat blurred = new Mat();
+    //     Imgproc.GaussianBlur(gray, blurred, new Size(5, 5), 0);
+
+    //     // Apply a threshold to create a binary image
+    //     Mat binary = new Mat();
+    //     Imgproc.threshold(blurred, binary, 225, 255, Imgproc.THRESH_BINARY);
+
+    //     // Apply dilation and erosion to close gaps in contours
+    //     Mat dilated = new Mat();
+    //     Imgproc.dilate(binary, dilated, new Mat(), new Point(-1, -1), 2); // 2 iterations
+
+    //     Mat eroded = new Mat();
+    //     Imgproc.erode(dilated, eroded, new Mat(), new Point(-1, -1), 1); // 1 iteration
+
+    //     // Invert the binary image
+    //     Core.bitwise_not(eroded, eroded);
+
+    //     // Set the result as the processed frame
+    //     opmode.telemetry.addLine("new frame");
+
+    //     return eroded;
+    // }
     
     //this method finds the gamepiece location and returns it based on an int
     public int getPixelLocation(){
@@ -85,7 +114,7 @@ public class PixelLocator extends OpenCvPipeline {
         boolean found = false;
         // Find contours in the binary image
         List<MatOfPoint> contours = new ArrayList<>();
-        Imgproc.findContours(gray, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(binary, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
         opmode.telemetry.addData("contours", contours.size());
         for (MatOfPoint contour : contours) {
