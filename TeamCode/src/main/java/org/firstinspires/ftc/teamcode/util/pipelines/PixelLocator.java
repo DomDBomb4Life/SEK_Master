@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.pipelines;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
@@ -14,31 +16,45 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
 
 public class PixelLocator extends OpenCvPipeline {
     //put your variables here to use later
-    Mat gray;
+    Mat gray = new Mat();
     Mat binary = new Mat();
+    OpMode opmode;
 
+
+    //constructor
+
+    public PixelLocator(OpMode opmode){
+        this.opmode = opmode;
+
+    }
 
     @Override// this is the method that tells the pipeline what to do with an image
     public Mat processFrame(Mat input) {
-        //apply a filter to the image to make it so all of the white image pixels are represented as 1s in a binary image.
-        // Convert the image to grayscale
-        gray = new Mat();
+        // Reduce the resolution of the image
+
+
+        // Apply a filter to the resized image to make it so all of the white image pixels are represented as 1s in a binary image.
+        // Convert the resized image to grayscale
+        Mat gray = new Mat();
         Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
 
         // Apply a threshold to create a binary image
-        binary = new Mat();
-        Imgproc.threshold(gray, binary, 230, 255, Imgproc.THRESH_BINARY);
+        Mat binary = new Mat();
+        Imgproc.threshold(gray, binary, 225, 255, Imgproc.THRESH_BINARY);
 
         // Invert the binary image
         Core.bitwise_not(binary, binary);
         
         // Set the result as the processed frame
+        opmode.telemetry.addLine("new frame");
+
         return binary;
     }
-
+    
     //this method finds the gamepiece location and returns it based on an int
     public int getPixelLocation(){
         //splice the image into thirds
@@ -69,14 +85,20 @@ public class PixelLocator extends OpenCvPipeline {
         boolean found = false;
         // Find contours in the binary image
         List<MatOfPoint> contours = new ArrayList<>();
-        Imgproc.findContours(binary, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+        Imgproc.findContours(gray, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-
+        opmode.telemetry.addData("contours", contours.size());
         for (MatOfPoint contour : contours) {
             double area = Imgproc.contourArea(contour);
             Rect rect = Imgproc.boundingRect(contour);
             double density = area / (rect.width * rect.height);
             
+            //telemetry stuff
+            // opmode.telemetry.addLine("Density: " + density);
+            // opmode.telemetry.addLine("width: " + rect.width);
+            // opmode.telemetry.addLine("height: " + rect.height);
+            // opmode.telemetry.update();
+
             //determine if the density is the correct amount
            if ((density >= minDensity && density <= maxDensity) && (rect.width <= maxX && rect.width >= minX) && (rect.height <= maxY && rect.height >= minY)) {
                found = true;
@@ -84,11 +106,11 @@ public class PixelLocator extends OpenCvPipeline {
            }
         }
         return found;
+    }
 
-
-        //this method will determine the pixel density of the image
-        //this will be used to determine the location of the gamepiece
-        //this will be done by counting the number of white pixels in the image and I want to apply some kind of kmeans clustering to the image to determine the probibility of a gamepaice in that image
+    public void addTelemetry(MatOfPoint contour){
+        // Add telemetry for the contours
+     
     }
 
     //*******************************************************************************************
@@ -141,9 +163,9 @@ public class PixelLocator extends OpenCvPipeline {
         int width = input.cols();
         int thirdWidth = width / 3;
 
-        Mat firstThird = input.submat(new Rect(0, input.rows(), 0, thirdWidth));
-        Mat secondThird = input.submat(new Rect(0, input.rows(), thirdWidth, 2 * thirdWidth));
-        Mat thirdThird = input.submat(new Rect(0, input.rows(), 2 * thirdWidth, width));
+        Mat firstThird = input.submat(new Rect(0, 0, thirdWidth, input.rows()));
+        Mat secondThird = input.submat(new Rect(thirdWidth, 0, thirdWidth, input.rows()));
+        Mat thirdThird = input.submat(new Rect(2 * thirdWidth, 0, thirdWidth, input.rows()));
 
         return new Mat[]{firstThird, secondThird, thirdThird};
     }
