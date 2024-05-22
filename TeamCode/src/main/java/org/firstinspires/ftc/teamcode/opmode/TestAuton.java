@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import org.firstinspires.ftc.teamcode.opmode.TestAuton; // Add this import statement
+
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -17,14 +20,15 @@ public class TestAuton extends LinearOpMode {
 
 
         //waiting for the start to be pressed
-        while (!isStarted() && !isStopRequested()) {
+        do{
             //variables related to states and encoders
             int location = pipe.getPixelLocation();
             telemetry.addData("Location", location);
             telemetry.update();
-        }
+        }while (!isStarted() && !isStopRequested());
+        
         waitForStart();
-        while(opModeIsActive()){}
+        
 
         //when running
     }

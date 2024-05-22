@@ -1,103 +1,52 @@
 package org.firstinspires.ftc.teamcode.util.pipelines;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
-import org.opencv.core.TermCriteria;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.opencv.core.Rect;
-import org.opencv.core.Size;
 
 public class PixelLocator extends OpenCvPipeline {
-    //put your variables here to use later
-    Mat gray = new Mat();
-    Mat binary = new Mat();
-    OpMode opmode;
+    private Mat gray = new Mat();
+    private Mat binary = new Mat();
+    private OpMode opmode;
 
-
-    //constructor
-
-    public PixelLocator(OpMode opmode){
+    public PixelLocator(OpMode opmode) {
         this.opmode = opmode;
-
     }
 
-    @Override// this is the method that tells the pipeline what to do with an image
+    @Override
     public Mat processFrame(Mat input) {
-        // Reduce the resolution of the image
-
-
-        // Apply a filter to the resized image to make it so all of the white image pixels are represented as 1s in a binary image.
-        // Convert the resized image to grayscale
-        Mat gray = new Mat();
         Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.threshold(gray, binary, 230, 255, Imgproc.THRESH_BINARY);
 
-        // Apply a threshold to create a binary image
-        Mat binary = new Mat();
-        Imgproc.threshold(gray, binary, 225, 255, Imgproc.THRESH_BINARY);
-
-        // Invert the binary image
-        // Core.bitwise_not(binary, binary);
-        
-        // Set the result as the processed frame
-        opmode.telemetry.addLine("new frame");
+        // Debug input matrix
+        opmode.telemetry.addData("Input Mat", matToString(input));
+        opmode.telemetry.addData("Binary Mat", matToString(binary));
+        opmode.telemetry.update();
 
         return binary;
     }
 
-    // public Mat processFrame(Mat input) {
-    //     // Convert the input image to grayscale
-    //     Mat gray = new Mat();
-    //     Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
-
-    //     // Apply a Gaussian blur to reduce noise
-    //     Mat blurred = new Mat();
-    //     Imgproc.GaussianBlur(gray, blurred, new Size(5, 5), 0);
-
-    //     // Apply a threshold to create a binary image
-    //     Mat binary = new Mat();
-    //     Imgproc.threshold(blurred, binary, 225, 255, Imgproc.THRESH_BINARY);
-
-    //     // Apply dilation and erosion to close gaps in contours
-    //     Mat dilated = new Mat();
-    //     Imgproc.dilate(binary, dilated, new Mat(), new Point(-1, -1), 2); // 2 iterations
-
-    //     Mat eroded = new Mat();
-    //     Imgproc.erode(dilated, eroded, new Mat(), new Point(-1, -1), 1); // 1 iteration
-
-    //     // Invert the binary image
-    //     Core.bitwise_not(eroded, eroded);
-
-    //     // Set the result as the processed frame
-    //     opmode.telemetry.addLine("new frame");
-
-    //     return eroded;
-    // }
-    
-    //this method finds the gamepiece location and returns it based on an int
-    public int getPixelLocation(){
-        //splice the image into thirds
+    public int getPixelLocation() {
         Mat[] thirds = getThirds(binary);
 
-        for (Mat third : thirds) {
-            boolean found = determinePixelDensity(third);
+        for (int i = 0; i < thirds.length; i++) {
+            opmode.telemetry.addData("Processing Third", i);
+            opmode.telemetry.update();
+
+            boolean found = determinePixelDensity(thirds[i]);
             if (found) {
-                // Return the index of the third where the gamepiece is found
-                return Arrays.asList(thirds).indexOf(third);
+                return i;
             }
         }
-
-        // Return -1 if the gamepiece is not found in any third
         return -1;
     }
 
@@ -111,84 +60,34 @@ public class PixelLocator extends OpenCvPipeline {
         int minY = 10;
         int maxY = 50;
 
-        boolean found = false;
-        // Find contours in the binary image
         List<MatOfPoint> contours = new ArrayList<>();
-        Imgproc.findContours(binary, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+        Imgproc.findContours(input, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
-        opmode.telemetry.addData("contours", contours.size());
+        // Debug contours and input
+        opmode.telemetry.addData("Contours Size", contours.size());
+        opmode.telemetry.addData("Input Mat in determinePixelDensity", matToString(input));
+        for (int i = 0; i < contours.size(); i++) {
+            opmode.telemetry.addData("Contour " + i, contours.get(i).toArray());
+        }
+        opmode.telemetry.update();
+
+        boolean found = false;
         for (MatOfPoint contour : contours) {
             double area = Imgproc.contourArea(contour);
             Rect rect = Imgproc.boundingRect(contour);
             double density = area / (rect.width * rect.height);
-            
-            //telemetry stuff
-            // opmode.telemetry.addLine("Density: " + density);
-            // opmode.telemetry.addLine("width: " + rect.width);
-            // opmode.telemetry.addLine("height: " + rect.height);
-            // opmode.telemetry.update();
 
-            //determine if the density is the correct amount
-           if ((density >= minDensity && density <= maxDensity) && (rect.width <= maxX && rect.width >= minX) && (rect.height <= maxY && rect.height >= minY)) {
-               found = true;
-               break;
-           }
+            if ((density >= minDensity && density <= maxDensity) && 
+                (rect.width <= maxX && rect.width >= minX) && 
+                (rect.height <= maxY && rect.height >= minY)) {
+                found = true;
+                break;
+            }
         }
         return found;
     }
 
-    public void addTelemetry(MatOfPoint contour){
-        // Add telemetry for the contours
-     
-    }
-
-    //*******************************************************************************************
-    
-
-    //*******************************************************************************************
-
-//     public double determinePixelDensity_V2(Mat input){
-//         // Convert the binary image to a set of points
-//         List<Point> points = new ArrayList<>();
-//             for (int y = 0; y < input.rows(); y++) {
-//                 for (int x = 0; x < input.cols(); x++) {
-//                     if (input.get(y, x)[0] > 0) {
-//                         points.add(new Point(x, y));
-//                     }
-//                 }
-//             }
-
-//         // Convert the list of points to a MatOfPoint2f
-//         MatOfPoint2f pointsMat = new MatOfPoint2f();
-//         pointsMat.fromList(points);
-
-//         // Apply the k-means algorithm to cluster the points
-//         TermCriteria criteria = new TermCriteria(TermCriteria.EPS + TermCriteria.MAX_ITER, 100, 0.2);
-//         Mat labels = new Mat();
-//         Mat centers = new Mat();
-//         Core.kmeans(pointsMat, 3, labels, criteria, 3, Core.KMEANS_PP_CENTERS, centers);
-
-//         // Calculate the density of each cluster
-//         int[] counts = new int[3];
-//         for (int i = 0; i < labels.rows(); i++) {
-//             int clusterIdx = (int) labels.get(i, 0)[0];
-//             counts[clusterIdx]++;
-//         }
-
-//         // Calculate the density of each cluster
-//         double[] densities = new double[3];
-//         for (int i = 0; i < 3; i++) {
-//             double area = Imgproc.contourArea(new MatOfPoint(centers.row(i)));
-//             densities[i] = counts[i] / area;
-//         }
-
-//         // Return the maximum density
-//         return Arrays.stream(densities).max().getAsDouble();
-//     }
-
-
-//     //this method splits the image into thirds and returns a matrix of the images
-    public Mat[] getThirds(Mat input){
+    public Mat[] getThirds(Mat input) {
         int width = input.cols();
         int thirdWidth = width / 3;
 
@@ -198,5 +97,21 @@ public class PixelLocator extends OpenCvPipeline {
 
         return new Mat[]{firstThird, secondThird, thirdThird};
     }
+
+    // Helper method to convert Mat to String
+    private String matToString(Mat mat) {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < mat.rows(); row++) {
+            for (int col = 0; col < mat.cols(); col++) {
+                double[] data = mat.get(row, col);
+                sb.append("[");
+                for (double datum : data) {
+                    sb.append(datum).append(",");
+                }
+                sb.append("] ");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }
-        

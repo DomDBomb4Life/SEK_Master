@@ -9,7 +9,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class VisionPipeline{
-    OpenCvCamera webcam;
+    public OpenCvCamera webcam;
     OpMode opMode;
 
     public VisionPipeline(OpMode opMode, OpenCvPipeline pipeline){
